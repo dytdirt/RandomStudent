@@ -42,7 +42,7 @@ namespace RandomStudent
             {
                 return;
             }
-            MessageBox.Show(FileName);
+
             StreamReader reader = new StreamReader(FileName);
             string LineData;
             while ((LineData = reader.ReadLine()) != null)
@@ -55,15 +55,27 @@ namespace RandomStudent
 
         public void ReadFile(object sender, EventArgs e)
         {
+            int i = 0;
             string FileName = @"student.dll";
             string LineData;
             if (File.Exists(@"student.dll"))
             {
                 StreamReader reader = new StreamReader(FileName);
-                while ((LineData = reader.ReadLine()) != null)
+                line = Convert.ToInt32(reader.ReadLine());
+                while (i<line)
                 {
-                    ListOfStudents[line++] = LineData;
+                    LineData = reader.ReadLine();
+                    ListOfStudents[i++] = LineData;
                 }
+
+                i = 0;
+
+                while (i<line)
+                {
+                    LineData = reader.ReadLine();
+                    Map[i++] = Convert.ToInt32(LineData);
+                }
+
                 reader.Close();
             }
             else
@@ -76,15 +88,27 @@ namespace RandomStudent
 
         public void SaveFile(object sender, EventArgs e)
         {
+            if (File.Exists(@"student.dll"))
+            {
+                FileInfo i = new FileInfo(@"student.dll");
+                i.Attributes = FileAttributes.Normal;
+            }
+
             StreamWriter writer = new StreamWriter(@"student.dll");
+            writer.WriteLine(line);
             for (int i = 0; i < line; i++)
             {
                 writer.WriteLine(ListOfStudents[i]);
             }
-
+            for (int i = 0; i < line; i++)
+            {
+                writer.WriteLine(Map[i]);
+            }
             writer.Close();
+            
             FileInfo info = new FileInfo(@"student.dll");
             info.Attributes = FileAttributes.Hidden | FileAttributes.ReadOnly;
+
         }
 
         public void StartRandom(object sender, EventArgs e)
@@ -97,6 +121,7 @@ namespace RandomStudent
             nowLine = random.Next(line);
             if (Map[nowLine] == 0)
             {
+                System.Media.SystemSounds.Asterisk.Play();
                 NameLabel.Text = ListOfStudents[nowLine];
                 Map[nowLine] += (int)(line * 0.65);
             }
@@ -117,6 +142,7 @@ namespace RandomStudent
 
         public void Exit(object sender, EventArgs e)
         {
+            SaveFile(sender, e);
             Close();
         }
     }

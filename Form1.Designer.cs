@@ -98,6 +98,7 @@
             Controls.Add(没啥用的关于);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Form1";
+            Opacity = 0.8D;
             Text = "Form1";
             TopMost = true;
             Load += ReadFile;
