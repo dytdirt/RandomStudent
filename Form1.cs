@@ -28,8 +28,17 @@ namespace RandomStudent
         public const int HTCAPTION = 0x0002;
 
 
-        private RijndaelManaged Setting()
+        private AES Setting()
         {
+            AES aes = new AES
+            {
+                Key = Encoding.UTF8.GetBytes("dytdytdytdyt"), // 加密密钥,自己设置，长度必须为16字节的倍数
+                IV = Encoding.UTF8.GetBytes("114514114514"), // 加密的iv偏移量,长度必须为16字节的倍数
+                Mode = CipherMode.CBC, // 加密模式，ECB、CBC、CFB等
+                Padding = PaddingMode.PKCS7, // 待加密的明文长度不满足条件时使用的填充模式，PKCS7是python中默认的填充模式
+                BlockSize = 128 // 加密操作的块大小
+            };
+            /*
             RijndaelManaged rijndaelCipher = new RijndaelManaged
             {
                 Key = Encoding.UTF8.GetBytes("dytdytdytdyt"), // 加密密钥,自己设置，长度必须为16字节的倍数
@@ -38,7 +47,10 @@ namespace RandomStudent
                 Padding = PaddingMode.PKCS7, // 待加密的明文长度不满足条件时使用的填充模式，PKCS7是python中默认的填充模式
                 BlockSize = 128 // 加密操作的块大小
             };
-            return rijndaelCipher;
+            */
+            // 已经过时的！！！
+
+            return aes;
         }
 
         private byte[] FileReadBytesToEnd(string fp)
@@ -69,7 +81,8 @@ namespace RandomStudent
                 if (fileData.Length == 0)
                     return;
                 // 设定加密参数
-                RijndaelManaged rijndaelCipher = Setting();
+                ArraySegment aes = Setting();
+                // RijndaelManaged rijndaelCipher = Setting();
                 // 加密文件内容
                 ICryptoTransform transform = rijndaelCipher.CreateEncryptor(); // 创建加密对象
                 byte[] cipherBytes = transform.TransformFinalBlock(fileData, 0, fileData.Length);
