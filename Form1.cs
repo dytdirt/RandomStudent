@@ -1,9 +1,14 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Encoding.CodePages;
+using System.Security.Cryptography;
+using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace RandomStudent
 {
+
     public partial class Form1 : Form
     {
         int line = 0;
@@ -14,7 +19,6 @@ namespace RandomStudent
             InitializeComponent();
         }
 
-
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
         [DllImport("user32.dll")]
@@ -22,6 +26,96 @@ namespace RandomStudent
         public const int WM_SYSCOMMAND = 0x0112;
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
+
+
+        private RijndaelManaged Setting()
+        {
+            RijndaelManaged rijndaelCipher = new RijndaelManaged
+            {
+                Key = Encoding.UTF8.GetBytes("dytdytdytdyt"), // 加密密钥,自己设置，长度必须为16字节的倍数
+                IV = Encoding.UTF8.GetBytes("114514114514"), // 加密的iv偏移量,长度必须为16字节的倍数
+                Mode = CipherMode.CBC, // 加密模式，ECB、CBC、CFB等
+                Padding = PaddingMode.PKCS7, // 待加密的明文长度不满足条件时使用的填充模式，PKCS7是python中默认的填充模式
+                BlockSize = 128 // 加密操作的块大小
+            };
+            return rijndaelCipher;
+        }
+
+        private byte[] FileReadBytesToEnd(string fp)
+        {
+            try
+            {
+                FileStream fs = new FileStream(fp, FileMode.Open, FileAccess.Read);
+                byte[] buf = new byte[fs.Length];
+                fs.Read(buf, 0, buf.Length);
+                if (fs != null)
+                    fs.Close();
+                return buf;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return new byte[0];
+        }
+        public void EncryptFile(string FileName)
+        {
+            try
+            {
+                string FileName = GetFileName();
+                if (FileName == string.Empty)
+                    return;
+                byte[] fileData = FileReadBytesToEnd(FileName);
+                if (fileData.Length == 0)
+                    return;
+                //设定加密参数
+                RijndaelManaged rijndaelCipher = Setting();
+                //加密文件内容
+                ICryptoTransform transform = rijndaelCipher.CreateEncryptor(); //创建加密对象
+                byte[] cipherBytes = transform.TransformFinalBlock(fileData, 0, fileData.Length);
+                //将加密后的文件内容写入原来的文件
+                string contentStr = Convert.ToBase64String(cipherBytes); //将字节数组转为base64字符串保存，防止乱码
+                File.WriteAllText(FileName, contentStr);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        public void DecryptFile(string FileName)
+        {
+            try
+            {
+                //选择本地文件
+                string FileName = GetFileName();
+                if (FileName == string.Empty)
+                    return;
+                //读取文件内容
+
+                byte[] fileData = FileReadBytesToEnd(FileName);
+                if (fileData.Length == 0)
+                    return;
+                //由于文件内容是base64格式编码的字符串，所以需要先进行base64解码
+
+                string decryptStr = Encoding.UTF8.GetString(fileData);
+                fileData = Convert.FromBase64String(decryptStr);
+                //设定解密参数，与加密参数保持一致
+
+                RijndaelManaged rijndaelCipher = Setting();
+                //解密文件内容
+                ICryptoTransform transform = rijndaelCipher.CreateDecryptor(); // 创建解密对象
+                byte[] cipherBytes = transform.TransformFinalBlock(fileData, 0, fileData.Length);
+                //解密后的文件内容写入原来的文件
+                string contentStr = Encoding.UTF8.GetString(cipherBytes); //将字节数组转为字符串保存
+                File.WriteAllText(FileName, contentStr);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         //添加窗体的MouseDown事件，并编写如下代码
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -120,7 +214,9 @@ namespace RandomStudent
 
             if (GetTextFileEncodingType(FileName) == Encoding.UTF8)
             {
-                StreamReader reader = new StreamReader(FileName, Encoding.UTF8); // 如果文件编码为UTF8（Windows7以上（不含））则用正常方法打开
+
+                StreamReader reader = new StreamReader(FileName, Encoding.UTF8);
+                // 如果文件编码为UTF8（Windows7以上（不含））则用正常方法打开
 
                 string LineData;
                 while ((LineData = reader.ReadLine()) != null)
@@ -132,7 +228,8 @@ namespace RandomStudent
             else
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                StreamReader reader = new StreamReader(FileName, Encoding.GetEncoding("GB2312")); // 在较老版本Windows，文本文档默认编码为ANSI（多种编码混合形态，其中中文为GB2312）
+                StreamReader reader = new StreamReader(FileName, Encoding.GetEncoding("GB2312"));
+                // 在较老版本Windows，文本文档默认编码为ANSI（多种编码混合形态，其中中文为GB2312）
 
                 string LineData;
                 while ((LineData = reader.ReadLine()) != null)
@@ -151,7 +248,6 @@ namespace RandomStudent
             string LineData;
             if (File.Exists(@"student.dll"))
             {
-
 
                 if (GetTextFileEncodingType(FileName) == Encoding.UTF8)
                 {
@@ -173,7 +269,6 @@ namespace RandomStudent
                 }
                 else
                 {
-
                     StreamReader reader = new StreamReader(FileName, Encoding.GetEncoding("GB2312"));
                     line = Convert.ToInt32(reader.ReadLine());
                     while (i < line)
