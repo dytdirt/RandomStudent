@@ -58,7 +58,7 @@ namespace RandomStudent
             }
             return new byte[0];
         }
-        public void EncryptFile(string FileName)
+        public void EncryptFile(string FileName)    // 文件的加密
         {
             try
             {
@@ -68,13 +68,13 @@ namespace RandomStudent
                 byte[] fileData = FileReadBytesToEnd(FileName);
                 if (fileData.Length == 0)
                     return;
-                //设定加密参数
+                // 设定加密参数
                 RijndaelManaged rijndaelCipher = Setting();
-                //加密文件内容
-                ICryptoTransform transform = rijndaelCipher.CreateEncryptor(); //创建加密对象
+                // 加密文件内容
+                ICryptoTransform transform = rijndaelCipher.CreateEncryptor(); // 创建加密对象
                 byte[] cipherBytes = transform.TransformFinalBlock(fileData, 0, fileData.Length);
-                //将加密后的文件内容写入原来的文件
-                string contentStr = Convert.ToBase64String(cipherBytes); //将字节数组转为base64字符串保存，防止乱码
+                // 将加密后的文件内容写入原来的文件
+                string contentStr = Convert.ToBase64String(cipherBytes); // 将字节数组转为base64字符串保存，防止乱码
                 File.WriteAllText(FileName, contentStr);
             }
             catch (Exception ex)
@@ -84,31 +84,30 @@ namespace RandomStudent
         }
 
 
-        public void DecryptFile(string FileName)
+        public void DecryptFile(string FileName)    // 文件的解密
         {
             try
             {
-                //选择本地文件
-                string FileName = GetFileName();
+                // 选择本地文件
                 if (FileName == string.Empty)
                     return;
-                //读取文件内容
+                // 读取文件内容
 
                 byte[] fileData = FileReadBytesToEnd(FileName);
                 if (fileData.Length == 0)
                     return;
-                //由于文件内容是base64格式编码的字符串，所以需要先进行base64解码
+                // 由于文件内容是base64格式编码的字符串，所以需要先进行base64解码
 
                 string decryptStr = Encoding.UTF8.GetString(fileData);
                 fileData = Convert.FromBase64String(decryptStr);
-                //设定解密参数，与加密参数保持一致
+                // 设定解密参数，与加密参数保持一致
 
                 RijndaelManaged rijndaelCipher = Setting();
-                //解密文件内容
+                // 解密文件内容
                 ICryptoTransform transform = rijndaelCipher.CreateDecryptor(); // 创建解密对象
                 byte[] cipherBytes = transform.TransformFinalBlock(fileData, 0, fileData.Length);
-                //解密后的文件内容写入原来的文件
-                string contentStr = Encoding.UTF8.GetString(cipherBytes); //将字节数组转为字符串保存
+                // 解密后的文件内容写入原来的文件
+                string contentStr = Encoding.UTF8.GetString(cipherBytes); // 将字节数组转为字符串保存
                 File.WriteAllText(FileName, contentStr);
             }
             catch (Exception ex)
@@ -117,7 +116,7 @@ namespace RandomStudent
             }
         }
 
-        //添加窗体的MouseDown事件，并编写如下代码
+        // 添加窗体的MouseDown事件，并编写如下代码
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
@@ -126,8 +125,8 @@ namespace RandomStudent
 
         private static bool IsUTF8Bytes(byte[] data)
         {
-            int charByteCounter = 1; //计算当前正分析的字符应还有的字节数 
-            byte curByte; //当前分析的字节. 
+            int charByteCounter = 1; // 计算当前正分析的字符应还有的字节数 
+            byte curByte; // 当前分析的字节. 
             for (int i = 0; i < data.Length; i++)
             {
                 curByte = data[i];
@@ -135,12 +134,12 @@ namespace RandomStudent
                 {
                     if (curByte >= 0x80)
                     {
-                        //判断当前 
+                        // 判断当前 
                         while (((curByte <<= 1) & 0x80) != 0)
                         {
                             charByteCounter++;
                         }
-                        //标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X 
+                        // 标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X 
                         if (charByteCounter == 1 || charByteCounter > 6)
                         {
                             return false;
@@ -149,7 +148,7 @@ namespace RandomStudent
                 }
                 else
                 {
-                    //若是UTF-8 此时第一位必须为1 
+                    // 若是UTF-8 此时第一位必须为1 
                     if ((curByte & 0xC0) != 0x80)
                     {
                         return false;
@@ -207,8 +206,8 @@ namespace RandomStudent
             }
 
             /*
-            以下代码只有在经过NuGet安装System.Text.Encoding.CodePages后才有用
-            （不然会抛出异常）
+                以下代码只有在经过NuGet安装System.Text.Encoding.CodePages后才有用
+                （不然会抛出异常）
             */
 
 
