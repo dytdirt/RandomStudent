@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace RandomStudent
 {
@@ -21,11 +22,78 @@ namespace RandomStudent
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
 
-        //���Ӵ����MouseDown�¼�������д���´���
+        //添加窗体的MouseDown事件，并编写如下代码
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
             SendMessage(this.Handle, WM_SYSCOMMAND, SC_MOVE + HTCAPTION, 0);
+        }
+
+        private static bool IsUTF8Bytes(byte[] data)
+        {
+            int charByteCounter = 1; //计算当前正分析的字符应还有的字节数 
+            byte curByte; //当前分析的字节. 
+            for (int i = 0; i < data.Length; i++)
+            {
+                curByte = data[i];
+                if (charByteCounter == 1)
+                {
+                    if (curByte >= 0x80)
+                    {
+                        //判断当前 
+                        while (((curByte <<= 1) & 0x80) != 0)
+                        {
+                            charByteCounter++;
+                        }
+                        //标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X 
+                        if (charByteCounter == 1 || charByteCounter > 6)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    //若是UTF-8 此时第一位必须为1 
+                    if ((curByte & 0xC0) != 0x80)
+                    {
+                        return false;
+                    }
+                    charByteCounter--;
+                }
+            }
+            if (charByteCounter > 1)
+            {
+                throw new Exception("非预期的byte格式");
+            }
+            return true;
+        }
+
+        static Encoding GetTextFileEncodingType(string fileName)
+        {
+            Encoding encoding = Encoding.Default;
+            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            BinaryReader binaryReader = new BinaryReader(fileStream, encoding);
+            byte[] buffer = binaryReader.ReadBytes((int)fileStream.Length);
+            binaryReader.Close();
+            fileStream.Close();
+            if (buffer.Length >= 3 && buffer[0] == 239 && buffer[1] == 187 && buffer[2] == 191)
+            {
+                encoding = Encoding.UTF8;
+            }
+            else if (buffer.Length >= 3 && buffer[0] == 254 && buffer[1] == 255 && buffer[2] == 0)
+            {
+                encoding = Encoding.BigEndianUnicode;
+            }
+            else if (buffer.Length >= 3 && buffer[0] == 255 && buffer[1] == 254 && buffer[2] == 65)
+            {
+                encoding = Encoding.Unicode;
+            }
+            else if (IsUTF8Bytes(buffer))
+            {
+                encoding = Encoding.UTF8;
+            }
+            return encoding;
         }
 
         public void OpenAndSave(object sender, EventArgs e)
@@ -43,13 +111,35 @@ namespace RandomStudent
                 return;
             }
 
-            StreamReader reader = new StreamReader(FileName);
-            string LineData;
-            while ((LineData = reader.ReadLine()) != null)
+            /*
+            以下代码只有在经过NuGet安装System.Text.Encoding.CodePages后才有用
+            （不然会抛出异常）
+            */
+
+
+            if (GetTextFileEncodingType(FileName) == Encoding.UTF8)
             {
-                ListOfStudents[line++] = LineData;
+                StreamReader reader = new StreamReader(FileName, Encoding.UTF8); // 如果文件编码为UTF8（Windows7以上（不含））则用正常方法打开
+
+                string LineData;
+                while ((LineData = reader.ReadLine()) != null)
+                {
+                    ListOfStudents[line++] = LineData;
+                }
+                reader.Close();
             }
-            reader.Close();
+            else
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                StreamReader reader = new StreamReader(FileName, Encoding.GetEncoding("GB2312")); // 在较老版本Windows，文本文档默认编码为ANSI（多种编码混合形态，其中中文为GB2312）
+
+                string LineData;
+                while ((LineData = reader.ReadLine()) != null)
+                {
+                    ListOfStudents[line++] = LineData;
+                }
+                reader.Close();
+            }
             SaveFile(sender, e);
         }
 
@@ -60,27 +150,49 @@ namespace RandomStudent
             string LineData;
             if (File.Exists(@"student.dll"))
             {
-                StreamReader reader = new StreamReader(FileName);
-                line = Convert.ToInt32(reader.ReadLine());
-                while (i<line)
+
+
+                if (GetTextFileEncodingType(FileName) == Encoding.UTF8)
                 {
-                    LineData = reader.ReadLine();
-                    ListOfStudents[i++] = LineData;
+                    StreamReader reader = new StreamReader(FileName, Encoding.UTF8);
+                    line = Convert.ToInt32(reader.ReadLine());
+                    while (i < line)
+                    {
+                        LineData = reader.ReadLine();
+                        ListOfStudents[i++] = LineData;
+                    }
+                    i = 0;
+                    while (i < line)
+                    {
+                        LineData = reader.ReadLine();
+                        Map[i++] = Convert.ToInt32(LineData);
+                    }
+
+                    reader.Close();
                 }
-
-                i = 0;
-
-                while (i<line)
+                else
                 {
-                    LineData = reader.ReadLine();
-                    Map[i++] = Convert.ToInt32(LineData);
-                }
 
-                reader.Close();
+                    StreamReader reader = new StreamReader(FileName, Encoding.GetEncoding("GB2312"));
+                    line = Convert.ToInt32(reader.ReadLine());
+                    while (i < line)
+                    {
+                        LineData = reader.ReadLine();
+                        ListOfStudents[i++] = LineData;
+                    }
+                    i = 0;
+                    while (i < line)
+                    {
+                        LineData = reader.ReadLine();
+                        Map[i++] = Convert.ToInt32(LineData);
+                    }
+
+                    reader.Close();
+                }
             }
             else
             {
-                MessageBox.Show("δ�ҵ�ѧ���������뵼�룡");
+                MessageBox.Show("未找到学生名单，请导入！");
                 OpenAndSave(sender, e);
             }
 
@@ -105,7 +217,7 @@ namespace RandomStudent
                 writer.WriteLine(Map[i]);
             }
             writer.Close();
-            
+
             FileInfo info = new FileInfo(@"student.dll");
             info.Attributes = FileAttributes.Hidden | FileAttributes.ReadOnly;
 
@@ -137,7 +249,7 @@ namespace RandomStudent
 
         public void About(object sender, EventArgs e)
         {
-            MessageBox.Show("Copyright 2023 dyt_dirt\r\n\r\n   Licensed under the Apache License, Version 2.0 (the \"License\");\r\n   you may not use this file except in compliance with the License.\r\n   You may obtain a copy of the License at\r\n\r\n       http://www.apache.org/licenses/LICENSE-2.0\r\n\r\n   Unless required by applicable law or agreed to in writing, software\r\n   distributed under the License is distributed on an \"AS IS\" BASIS,\r\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n   See the License for the specific language governing permissions and\r\n   limitations under the License.\r\n\r\n\r\n  Դ��������GitHub�ϣ�https://www.github.com/dytdirt/RandomStudent   ����Ȥ��ͬѧ���Գ����루bushi\r\n\r\n\r\n  ������ѧ����ĳλͬѧ�͸���ʦ��\"��ҵ���\"������ʱ��ִ٣��������bug�������ͬѧ�ܰ����޸�bug���һ�ܿ��ĵģ���");
+            MessageBox.Show("Copyright 2023 dyt_dirt\r\n\r\n   Licensed under the Apache License, Version 2.0 (the \"License\");\r\n   you may not use this file except in compliance with the License.\r\n   You may obtain a copy of the License at\r\n\r\n       http://www.apache.org/licenses/LICENSE-2.0\r\n\r\n   Unless required by applicable law or agreed to in writing, software\r\n   distributed under the License is distributed on an \"AS IS\" BASIS,\r\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n   See the License for the specific language governing permissions and\r\n   limitations under the License.\r\n\r\n\r\n  源代码会放在GitHub上：https://www.github.com/dytdirt/RandomStudent   感兴趣的同学可以抄代码（bushi\r\n\r\n\r\n  这个随机学生是某位同学送给老师的\"毕业设计\"，由于时间仓促，难免会有bug，如果有同学能帮助修复bug，我会很开心的（）");
         }
 
         public void Exit(object sender, EventArgs e)
