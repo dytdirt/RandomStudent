@@ -38,7 +38,13 @@ namespace RandomStudent
             for (int i = 0; i < EncodeString.Length; i += 3)
             {
                 int c1 = ResultString[i], c2 = ResultString[i + 1], c3 = ResultString[i + 2], c4 = '\0';
-
+                int temp1 = c1 << 6, temp2 = c2 << 4, temp3 = c3 >> 6;
+                c1 >>= 2;
+                c2 >>= 4;
+                c2 |= temp1 << 4;
+                c4 = c3 << 2;
+                c3 = temp2 | temp3;
+                c4 >>= 2;
             }
 
             return ResultString;
