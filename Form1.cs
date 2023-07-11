@@ -1,26 +1,20 @@
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Security.Cryptography;
-using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
+using Base64;
 namespace RandomStudent
 {
 
     public partial class Form1 : Form
     {
         int line = 0;
+
         // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
         // 原始Base64表
-        readonly char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
-
-        //                                                                        ^~~~~~~ 都说了炒粉不能加鸡精！
+        private readonly char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+        //                                                                                       ^~~~~~~ 都说了炒粉不能加鸡精！
         private readonly string[] ListOfStudents = new string[100];
         private string FileOutput = "\0";
-        int[] Map = new int[100];
+        private int[] Map = new int[100];
         public Form1()
         {
             InitializeComponent();
@@ -33,59 +27,6 @@ namespace RandomStudent
         public const int WM_SYSCOMMAND = 0x0112;
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
-
-        public static bool HasChinese(string str)
-        {
-            return Regex.IsMatch(str, @"[\u4e00-\u9fa5]");
-        }
-
-        public string Base64Encode(string EncodeString)
-        {
-            string ResultString = "\0";
-
-            for (int i = 0; i + 2 < EncodeString.Length; i += 3)
-            {
-                byte c1 = (byte)EncodeString[i], c2 = (byte)EncodeString[i + 1], c3 = (byte)EncodeString[i + 2], c4 = (byte)'\0';
-                byte temp1 = (byte)(c1 << 6), temp2 = (byte)(c2 << 4), temp3 = (byte)(c3 >> 6);
-                c1 >>= 2;
-                c2 >>= 4;
-                c2 |= (byte)(temp1 >> 2);
-                c4 = (byte)(c3 << 2);
-                c3 = (byte)((temp2 >> 2) | temp3);
-                c4 >>= 2;
-                ResultString += Base64List[c1].ToString() + Base64List[c2].ToString() + Base64List[c3].ToString() + Base64List[c4].ToString();
-            }
-            if (EncodeString.Length % 3 == 2)
-            {
-                int i = EncodeString.Length - 2;
-                byte c1 = (byte)EncodeString[i], c2 = (byte)EncodeString[i + 1], c3 = (byte)'\0', c4 = (byte)'\0';
-                byte temp1 = (byte)(c1 << 6), temp2 = (byte)(c2 << 4), temp3 = (byte)(c3 >> 6);
-                c1 >>= 2;
-                c2 >>= 4;
-                c2 |= (byte)(temp1 >> 2);
-                c4 = (byte)(c3 << 2);
-                c3 = (byte)((temp2 >> 2) | temp3);
-                c4 >>= 2;
-                ResultString += Base64List[c1].ToString() + Base64List[c2].ToString() + Base64List[c3].ToString();
-                ResultString += "=";
-            }
-            else if (EncodeString.Length % 3 == 1)
-            {
-                int i = EncodeString.Length - 1;
-                byte c1 = (byte)EncodeString[i], c2 = (byte)'\0', c3 = (byte)'\0', c4 = (byte)'\0';
-                byte temp1 = (byte)(c1 << 6), temp2 = (byte)(c2 << 4), temp3 = (byte)(c3 >> 6);
-                c1 >>= 2;
-                c2 >>= 4;
-                c2 |= (byte)(temp1 >> 2);
-                c4 = (byte)(c3 << 2);
-                c3 = (byte)((temp2 >> 2) | temp3);
-                c4 >>= 2;
-                ResultString += Base64List[c1].ToString() + Base64List[c2].ToString();
-                ResultString += "==";
-            }
-
-            return ResultString;
-        }
 
         // 添加窗体的MouseDown事件，并编写如下代码
         private void Form1_MouseDown(object sender, MouseEventArgs e)
