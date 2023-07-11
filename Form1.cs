@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace RandomStudent
 {
@@ -12,7 +13,7 @@ namespace RandomStudent
     public partial class Form1 : Form
     {
         int line = 0;
-        // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
         // 原始Base64表
         char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
         //                                                                        ^~~~~~~ 都说了炒粉不能加鸡精！
@@ -32,19 +33,54 @@ namespace RandomStudent
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
 
+        public bool HasChinese(string str)
+        {
+            return Regex.IsMatch(str, @"[\u4e00-\u9fa5]");
+        }
+
         public string Base64Encode(string EncodeString)
         {
             string ResultString = "\0";
-            for (int i = 0; i < EncodeString.Length; i += 3)
+
+            for (int i = 0; i + 2 < EncodeString.Length; i += 3)
             {
-                int c1 = ResultString[i], c2 = ResultString[i + 1], c3 = ResultString[i + 2], c4 = '\0';
-                int temp1 = c1 << 6, temp2 = c2 << 4, temp3 = c3 >> 6;
+                byte c1 = (byte)EncodeString[i], c2 = (byte)EncodeString[i + 1], c3 = (byte)EncodeString[i + 2], c4 = (byte)'\0';
+                byte temp1 = (byte)(c1 << 6), temp2 = (byte)(c2 << 4), temp3 = (byte)(c3 >> 6);
                 c1 >>= 2;
                 c2 >>= 4;
-                c2 |= temp1 << 4;
-                c4 = c3 << 2;
-                c3 = temp2 | temp3;
+                c2 |= (byte)(temp1 >> 2);
+                c4 = (byte)(c3 << 2);
+                c3 = (byte)((temp2 >> 2) | temp3);
                 c4 >>= 2;
+                ResultString += Base64List[c1].ToString() + Base64List[c2].ToString() + Base64List[c3].ToString() + Base64List[c4].ToString();
+            }
+            if (EncodeString.Length % 3 == 2)
+            {
+                int i = EncodeString.Length - 2;
+                byte c1 = (byte)EncodeString[i], c2 = (byte)EncodeString[i + 1], c3 = (byte)'\0', c4 = (byte)'\0';
+                byte temp1 = (byte)(c1 << 6), temp2 = (byte)(c2 << 4), temp3 = (byte)(c3 >> 6);
+                c1 >>= 2;
+                c2 >>= 4;
+                c2 |= (byte)(temp1 >> 2);
+                c4 = (byte)(c3 << 2);
+                c3 = (byte)((temp2 >> 2) | temp3);
+                c4 >>= 2;
+                ResultString += Base64List[c1].ToString() + Base64List[c2].ToString() + Base64List[c3].ToString();
+                ResultString += "=";
+            }
+            else if (EncodeString.Length % 3 == 1)
+            {
+                int i = EncodeString.Length - 1;
+                byte c1 = (byte)EncodeString[i], c2 = (byte)'\0', c3 = (byte)'\0', c4 = (byte)'\0';
+                byte temp1 = (byte)(c1 << 6), temp2 = (byte)(c2 << 4), temp3 = (byte)(c3 >> 6);
+                c1 >>= 2;
+                c2 >>= 4;
+                c2 |= (byte)(temp1 >> 2);
+                c4 = (byte)(c3 << 2);
+                c3 = (byte)((temp2 >> 2) | temp3);
+                c4 >>= 2;
+                ResultString += Base64List[c1].ToString() + Base64List[c2].ToString();
+                ResultString += "==";
             }
 
             return ResultString;
