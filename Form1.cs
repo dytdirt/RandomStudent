@@ -14,7 +14,7 @@ namespace RandomStudent
         int line = 0;
         // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         // 原始Base64表
-        char[] Base64List = "啊啵呲的额佛哥喝一金课勒摸呢欧破气日四特五鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+        char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
         //                                                                        ^~~~~~~ 都说了炒粉不能加鸡精！
         string[] ListOfStudents = new string[100];
         string FileOutput;
@@ -32,11 +32,13 @@ namespace RandomStudent
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
 
-        public String Base64Encode(String EncodeString)
+        public string Base64Encode(string EncodeString)
         {
-            String ResultString = "\0";
+            string ResultString = "\0";
             for (int i = 0; i < EncodeString.Length; i += 3)
             {
+                int c1 = ResultString[i], c2 = ResultString[i + 1], c3 = ResultString[i + 2], c4 = '\0';
+
             }
 
             return ResultString;
