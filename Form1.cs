@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace RandomStudent
 {
@@ -11,7 +12,12 @@ namespace RandomStudent
     public partial class Form1 : Form
     {
         int line = 0;
+        // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        // 原始Base64表
+        char[] Base64List = "啊啵呲的额佛哥喝一金课勒摸呢欧破气日四特五鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+        //                                                                        ^~~~~~~ 都说了炒粉不能加鸡精！
         string[] ListOfStudents = new string[100];
+        string FileOutput;
         int[] Map = new int[100];
         public Form1()
         {
@@ -25,6 +31,16 @@ namespace RandomStudent
         public const int WM_SYSCOMMAND = 0x0112;
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
+
+        public String Base64Encode(String EncodeString)
+        {
+            String ResultString = "\0";
+            for (int i = 0; i < EncodeString.Length; i += 3)
+            {
+            }
+
+            return ResultString;
+        }
 
         // 添加窗体的MouseDown事件，并编写如下代码
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -205,6 +221,12 @@ namespace RandomStudent
 
         public void SaveFile(object sender, EventArgs e)
         {
+            FileOutput += line.ToString();
+            FileOutput += "\n";
+            for (int i = 0; i < line; i++)
+            {
+                FileOutput += ListOfStudents[i] + " " + Map[i].ToString() + "\n";
+            }
             if (File.Exists(@"student.dll"))
             {
                 FileInfo i = new FileInfo(@"student.dll");
