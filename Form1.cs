@@ -15,10 +15,11 @@ namespace RandomStudent
         int line = 0;
         // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
         // 原始Base64表
-        char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+        readonly char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+
         //                                                                        ^~~~~~~ 都说了炒粉不能加鸡精！
-        string[] ListOfStudents = new string[100];
-        string FileOutput;
+        private readonly string[] ListOfStudents = new string[100];
+        private string FileOutput = "\0";
         int[] Map = new int[100];
         public Form1()
         {
@@ -33,7 +34,7 @@ namespace RandomStudent
         public const int SC_MOVE = 0xF010;
         public const int HTCAPTION = 0x0002;
 
-        public bool HasChinese(string str)
+        public static bool HasChinese(string str)
         {
             return Regex.IsMatch(str, @"[\u4e00-\u9fa5]");
         }
