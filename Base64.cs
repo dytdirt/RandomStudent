@@ -4,7 +4,7 @@ namespace Base64
 {
     public class Base64
     {
-        // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
+        // private static readonly char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
         // 原始Base64表
         private static readonly char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼橆洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
 
@@ -13,10 +13,6 @@ namespace Base64
             string ResultString = "";
             byte[] Input = Encoding.Default.GetBytes(EncryptString);
 
-            for (int i = 0; i < Input.Length; i++)
-            {
-                Console.WriteLine(Input[i]);
-            }
             for (int i = 0; i + 2 < Input.Length; i += 3)
             {
                 byte c1 = Input[i], c2 = (byte)Input[i + 1], c3 = (byte)Input[i + 2];
@@ -67,7 +63,7 @@ namespace Base64
         {
             string ResultString = "";
 
-            for (int i = 0; i < EncryptedString.Length; i++)
+            for (int i = 0; i + 3 < EncryptedString.Length; i+=4)
             {
                 char c1 = EncryptedString[i], c2 = EncryptedString[i + 1], c3 = EncryptedString[i + 2], c4 = EncryptedString[i + 3];
                 byte b1 = 0, b2 = 0, b3 = 0;
