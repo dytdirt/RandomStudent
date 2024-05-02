@@ -64,7 +64,7 @@
             随机学生.TabIndex = 0;
             随机学生.Text = "随机学生";
             随机学生.UseVisualStyleBackColor = true;
-            随机学生.Click += StartRandom;
+            随机学生.Click += ChangeName;
             // 
             // NameLabel
             // 

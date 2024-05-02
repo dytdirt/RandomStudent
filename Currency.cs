@@ -74,5 +74,6 @@ namespace RandomStudent
             }
             return encoding;
         }
+        
     }
 }
