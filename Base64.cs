@@ -6,7 +6,7 @@ namespace Base64
     {
         // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
         // 原始Base64表
-        private static readonly char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+        private static readonly char[] Base64List = "啊啵呲的额佛哥喝姨几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
         //                                                                                       ^~~~~~~ 都说了炒粉不能加鸡精！
 
         public static string EncryptToBase64(string EncryptString)
@@ -64,7 +64,7 @@ namespace Base64
         {
             string ResultString = "";
 
-            for (int i = 0; i + 3 < EncryptedString.Length; i+=4)
+            for (int i = 0; i + 3 < EncryptedString.Length; i += 4)
             {
                 char c1 = EncryptedString[i], c2 = EncryptedString[i + 1], c3 = EncryptedString[i + 2], c4 = EncryptedString[i + 3];
                 byte b1 = 0, b2 = 0, b3 = 0;

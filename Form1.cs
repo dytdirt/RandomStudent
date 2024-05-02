@@ -198,7 +198,7 @@ namespace RandomStudent
 
                 return ListOfStudents[nowLine];
             }
-            
+
             goto Flag;
         }
 
@@ -229,8 +229,7 @@ namespace RandomStudent
         private void 测试功能_Click(object sender, EventArgs e)
         {
             // 笑死我甚至懒得给它取名字
-            // 十连up抽取。。。
-            // 详尽描述: 尝试创建一个label控件数组，
+            // 十连up抽取。。。的窗体。。。
         }
     }
 }
