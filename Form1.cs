@@ -6,15 +6,11 @@ namespace RandomStudent
 
     public partial class Form1 : Form
     {
-        int line = 0;
+        public static int line = 0;
+        public static string[] ListOfStudents = new string[100];
+        public static string FileOutput = "\0";
+        public static int[] Map = new int[100];
 
-        // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
-        // 原始Base64表
-        private readonly char[] Base64List = "啊啵呲的额佛哥喝一几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
-        //                                                                                       ^~~~~~~ 都说了炒粉不能加鸡精！
-        private readonly string[] ListOfStudents = new string[100];
-        private string FileOutput = "\0";
-        private int[] Map = new int[100];
         public Form1()
         {
             InitializeComponent();
@@ -35,95 +31,34 @@ namespace RandomStudent
             SendMessage(this.Handle, WM_SYSCOMMAND, SC_MOVE + HTCAPTION, 0);
         }
 
-        private static bool IsUTF8Bytes(byte[] data)
+        public static void release(object sender, EventArgs e)
         {
-            int charByteCounter = 1; // 计算当前正分析的字符应还有的字节数 
-            byte curByte; // 当前分析的字节. 
-            for (int i = 0; i < data.Length; i++)
-            {
-                curByte = data[i];
-                if (charByteCounter == 1)
-                {
-                    if (curByte >= 0x80)
-                    {
-                        // 判断当前 
-                        while (((curByte <<= 1) & 0x80) != 0)
-                        {
-                            charByteCounter++;
-                        }
-                        // 标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X 
-                        if (charByteCounter == 1 || charByteCounter > 6)
-                        {
-                            return false;
-                        }
-                    }
-                }
-                else
-                {
-                    // 若是UTF-8 此时第一位必须为1 
-                    if ((curByte & 0xC0) != 0x80)
-                    {
-                        return false;
-                    }
-                    charByteCounter--;
-                }
-            }
-            if (charByteCounter > 1)
-            {
-                throw new Exception("非预期的byte格式");
-            }
-            return true;
+            Map = new int[100];
+            return;
         }
 
-        static Encoding GetTextFileEncodingType(string fileName)
+        public static void OpenAndSave(object sender, EventArgs e)
         {
-            Encoding encoding = Encoding.Default;
-            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            BinaryReader binaryReader = new BinaryReader(fileStream, encoding);
-            byte[] buffer = binaryReader.ReadBytes((int)fileStream.Length);
-            binaryReader.Close();
-            fileStream.Close();
-            if (buffer.Length >= 3 && buffer[0] == 239 && buffer[1] == 187 && buffer[2] == 191)
-            {
-                encoding = Encoding.UTF8;
-            }
-            else if (buffer.Length >= 3 && buffer[0] == 254 && buffer[1] == 255 && buffer[2] == 0)
-            {
-                encoding = Encoding.BigEndianUnicode;
-            }
-            else if (buffer.Length >= 3 && buffer[0] == 255 && buffer[1] == 254 && buffer[2] == 65)
-            {
-                encoding = Encoding.Unicode;
-            }
-            else if (IsUTF8Bytes(buffer))
-            {
-                encoding = Encoding.UTF8;
-            }
-            return encoding;
-        }
-
-        public void OpenAndSave(object sender, EventArgs e)
-        {
-            line = 0;
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Filter = "(*.txt)|*.txt",
                 Multiselect = false
             };
-            ofd.ShowDialog();
-            string FileName = ofd.FileName;
-            if (FileName == "")
+
+            if (ofd.ShowDialog() == DialogResult.Cancel)
             {
                 return;
             }
+
+            line = 0;
+            string FileName = ofd.FileName;
 
             /*
                 以下代码只有在经过NuGet安装System.Text.Encoding.CodePages后才有用
                 （不然会抛出异常）
             */
 
-
-            if (GetTextFileEncodingType(FileName) == Encoding.UTF8)
+            if (Currency.GetTextFileEncodingType(FileName) == Encoding.UTF8)
             {
 
                 StreamReader reader = new StreamReader(FileName, Encoding.UTF8);
@@ -160,7 +95,7 @@ namespace RandomStudent
             if (File.Exists(@"student.dll"))
             {
 
-                if (GetTextFileEncodingType(FileName) == Encoding.UTF8)
+                if (Currency.GetTextFileEncodingType(FileName) == Encoding.UTF8)
                 {
                     StreamReader reader = new StreamReader(FileName, Encoding.UTF8);
                     line = Convert.ToInt32(reader.ReadLine());
@@ -205,7 +140,7 @@ namespace RandomStudent
 
         }
 
-        public void SaveFile(object sender, EventArgs e)
+        public static void SaveFile(object sender, EventArgs e)
         {
             FileOutput += line.ToString();
             FileOutput += "\n";
@@ -233,11 +168,11 @@ namespace RandomStudent
 
             FileInfo info = new FileInfo(@"student.dll");
             info.Attributes = FileAttributes.Hidden | FileAttributes.ReadOnly;
-
         }
 
         public void StartRandom(object sender, EventArgs e)
         {
+            TopMost = true;
             DateTime dt = DateTime.Now;
             long time = dt.ToFileTime();
             Random random = new((int)time);
@@ -269,6 +204,25 @@ namespace RandomStudent
         {
             SaveFile(sender, e);
             Close();
+        }
+
+        public void GetHelp(object sender, EventArgs e)
+        {
+            // 这里是一个废案，本来想做使用方法的弹窗，结果我懒（手动狗头）
+
+            MessageBox.Show("毫无疑问这里是个废案。\r\n\r\n Without a doubt, this is an abandoned case.");
+        }
+
+        private void GoToSetting(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.Show();
+        }
+
+        private void 测试功能_Click(object sender, EventArgs e)
+        {
+            // 笑死我甚至懒得给它取名字
+            // 十连up抽取。。。
         }
     }
 }
