@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using System.Text;
-using Base64;
 namespace RandomStudent
 {
 
@@ -8,7 +7,7 @@ namespace RandomStudent
     {
         private static int line = 0;
         private static string[] ListOfStudents = new string[100];
-        private static string FileOutput = String.Empty;
+        private static string[] UPList = new string[100];
         private static int[] Map = new int[100];
 
         public Form1()
@@ -29,6 +28,16 @@ namespace RandomStudent
         {
             ReleaseCapture();
             SendMessage(this.Handle, WM_SYSCOMMAND, SC_MOVE + HTCAPTION, 0);
+        }
+
+        static private int SearchIndex(string[] strings, string res)
+        {
+            for (int i = 0; i < strings.Length; i++)
+            {
+                if (strings[i] == res)
+                    return i;
+            }
+            return -1;
         }
 
         public static void release(object sender, EventArgs e)
@@ -142,12 +151,6 @@ namespace RandomStudent
 
         public static void SaveFile(object sender, EventArgs e)
         {
-            FileOutput += line.ToString();
-            FileOutput += "\n";
-            for (int i = 0; i < line; i++)
-            {
-                FileOutput += ListOfStudents[i] + " " + Map[i].ToString() + "\n";
-            }
             if (File.Exists(@"student.dll"))
             {
                 FileInfo i = new FileInfo(@"student.dll");
@@ -173,11 +176,11 @@ namespace RandomStudent
         public void ChangeName(object sender, EventArgs e)
         {
             TopMost = true;
-            NameLabel.Text = StartRandom();
+            NameLabel.Text = StartRandom(false);
             System.Media.SystemSounds.Asterisk.Play();
         }
 
-        static public string StartRandom()
+        static public string StartRandom(bool isUP)
         {
             DateTime dt = DateTime.Now;
             long time = dt.ToFileTime();
@@ -186,6 +189,10 @@ namespace RandomStudent
 
         Flag:
             nowLine = random.Next(line);
+            if (isUP && SearchIndex(UPList, ListOfStudents[nowLine]) != -1)
+            {
+                return ListOfStudents[nowLine];
+            }
             if (Map[nowLine] == 0)
             {
                 Map[nowLine] += (int)(line * 0.65);

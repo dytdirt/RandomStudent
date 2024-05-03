@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
 
+            names = new Label[100];
+
             SuspendLayout();
             // 
             // UPWindow
@@ -39,6 +41,10 @@
             Name = "UPWindow";
             Text = "UPWindow";
             ResumeLayout(false);
+            //
+            // BaseLabel
+            //
+            names[0].Size = new Size(126, 35);
         }
 
         #endregion
