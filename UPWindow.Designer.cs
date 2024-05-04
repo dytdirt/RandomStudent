@@ -44,7 +44,7 @@
             //
             // BaseLabel
             //
-            names[0].Size = new Size(126, 35);
+            // names[0].Size = new Size(126, 35);
         }
 
         #endregion

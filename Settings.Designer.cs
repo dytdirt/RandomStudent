@@ -55,7 +55,7 @@
             导入_名单.TabIndex = 1;
             导入_名单.Text = "导入";
             导入_名单.UseVisualStyleBackColor = true;
-            导入_名单.Click += Form1.OpenAndSave;
+            导入_名单.Click += OpenAndSave;
             // 
             // 清除缓存
             // 

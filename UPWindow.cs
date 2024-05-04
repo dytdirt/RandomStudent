@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static RandomStudent.Currency;
 
 namespace RandomStudent
 {
@@ -21,17 +22,31 @@ namespace RandomStudent
             InitializeComponent();
         }
 
+        public void OnLoad(object sender, EventArgs e)
+        {
+            for (int i = 1; i < 100; i++)
+            {
+                names[i].Text = " ";
+                names[i].Size = names[i - 1].Size;
+                names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y);
+
+            }
+        }
+
         public static void UPImport(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "导入UP名单";
-            openFileDialog.Filter = "(*.txt)|*.txt";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "导入UP名单",
+                Filter = "(*.txt)|*.txt",
+                Multiselect = false
+            };
 
             if (openFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
             UPnum = 0;
-            if (Currency.GetTextFileEncodingType(openFileDialog.FileName) == Encoding.UTF8)
+            if (GetTextFileEncodingType(openFileDialog.FileName) == Encoding.UTF8)
             {
 
                 StreamReader reader = new StreamReader(openFileDialog.FileName, Encoding.UTF8);
@@ -40,7 +55,7 @@ namespace RandomStudent
                 string LineData;
                 while ((LineData = reader.ReadLine()) != null)
                 {
-                    Form1.UPList[UPnum++] = LineData;
+                    UPList[UPnum++] = LineData;
                 }
                 reader.Close();
             }
@@ -53,20 +68,25 @@ namespace RandomStudent
                 string LineData;
                 while ((LineData = reader.ReadLine()) != null)
                 {
-                    Form1.UPList[UPnum++] = LineData;
+                    UPList[UPnum++] = LineData;
                 }
                 reader.Close();
             }
 
-            StreamWriter streamWriter = new StreamWriter("./student.dll");
-            foreach (string data in Form1.UPList)
+            StreamWriter streamWriter = new StreamWriter("./student.dll"); // 有风险
+            foreach (string data in UPList)
                 streamWriter.WriteLine(data);
             streamWriter.Close();
         }
 
         public void GetUP(object sender, EventArgs e)
         {
-            //
+            for (int i = 1; i <= standardNum; i++)
+            {
+                names[i].Text = StartRandom(true);
+                names[i].Size = names[i - 1].Size;
+                names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y + 35);
+            }
         }
     }
 }
