@@ -5,10 +5,10 @@ namespace RandomStudent
 
     public partial class Form1 : Form
     {
-        private static int line = 0;
-        private static string[] ListOfStudents = new string[100];
-        private static string[] UPList = new string[100];
-        private static int[] Map = new int[100];
+        public static int line = 0;
+        public static string[] ListOfStudents = new string[100];
+        public static string[] UPList = new string[100];
+        public static int[] Map = new int[100];
 
         public Form1()
         {
@@ -185,6 +185,7 @@ namespace RandomStudent
             DateTime dt = DateTime.Now;
             long time = dt.ToFileTime();
             Random random = new((int)time);
+            Random random1 = new(random.Next());
             int nowLine;
 
         Flag:
@@ -193,21 +194,24 @@ namespace RandomStudent
             {
                 return ListOfStudents[nowLine];
             }
-            if (Map[nowLine] == 0)
+            if (random1.Next() % 4 == 3)
             {
-                Map[nowLine] += (int)(line * 0.65);
-
-                for (int i = 0; i < line; i++)
+                if (Map[nowLine] == 0)
                 {
-                    if (Map[i] > 0)
-                        Map[i]--;
+                    Map[nowLine] += (int)(line * 0.65);
+
+                    for (int i = 0; i < line; i++)
+                    {
+                        if (Map[i] > 0)
+                            Map[i]--;
+                    }
+
+                    return ListOfStudents[nowLine];
                 }
-
-                return ListOfStudents[nowLine];
             }
-
             goto Flag;
         }
+
 
         public void About(object sender, EventArgs e)
         {

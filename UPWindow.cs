@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,15 +14,14 @@ namespace RandomStudent
 {
     public partial class UPWindow : Form
     {
-
-        private int line = 0;
-        private string[] UPList = new string[100];
+        public static int UPnum = 0;
+        public static int standardNum = 0;
         public UPWindow()
         {
             InitializeComponent();
         }
 
-        public void UPImport(object sender, EventArgs e)
+        public static void UPImport(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "导入UP名单";
@@ -30,6 +30,7 @@ namespace RandomStudent
             if (openFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
+            UPnum = 0;
             if (Currency.GetTextFileEncodingType(openFileDialog.FileName) == Encoding.UTF8)
             {
 
@@ -39,7 +40,7 @@ namespace RandomStudent
                 string LineData;
                 while ((LineData = reader.ReadLine()) != null)
                 {
-                    UPList[line++] = LineData;
+                    Form1.UPList[UPnum++] = LineData;
                 }
                 reader.Close();
             }
@@ -52,16 +53,20 @@ namespace RandomStudent
                 string LineData;
                 while ((LineData = reader.ReadLine()) != null)
                 {
-                    UPList[line++] = LineData;
+                    Form1.UPList[UPnum++] = LineData;
                 }
                 reader.Close();
             }
 
             StreamWriter streamWriter = new StreamWriter("./student.dll");
-            foreach (string data in UPList)
+            foreach (string data in Form1.UPList)
                 streamWriter.WriteLine(data);
             streamWriter.Close();
+        }
 
+        public void GetUP(object sender, EventArgs e)
+        {
+            //
         }
     }
 }

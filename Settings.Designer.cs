@@ -95,6 +95,7 @@
             UP_导入.TabIndex = 5;
             UP_导入.Text = "导入";
             UP_导入.UseVisualStyleBackColor = true;
+            UP_导入.Click += UPWindow.UPImport;
             // 
             // Settings
             // 
