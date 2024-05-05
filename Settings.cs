@@ -14,6 +14,7 @@ namespace RandomStudent
 {
     public partial class Settings : Form
     {
+
         public Settings()
         {
             InitializeComponent();
@@ -23,6 +24,11 @@ namespace RandomStudent
         {
             OpenFile(sender, e);
             SaveFile(sender, e);
+        }
+        
+        public void ValueChanged(object sender, EventArgs e)
+        {
+            standardNum = Convert.ToInt32(UP个数.Value);
         }
     }
 }

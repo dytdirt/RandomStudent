@@ -15,8 +15,7 @@ namespace RandomStudent
 {
     public partial class UPWindow : Form
     {
-        public static int UPnum = 0;
-        public static int standardNum = 0;
+        public int ticks = 0;
         public UPWindow()
         {
             InitializeComponent();
@@ -26,6 +25,8 @@ namespace RandomStudent
         {
             for (int i = 1; i < 100; i++)
             {
+                names[i] = new Label();
+                names[i].Name = i.ToString();
                 names[i].Text = " ";
                 names[i].Size = names[i - 1].Size;
                 names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y);
@@ -33,60 +34,22 @@ namespace RandomStudent
             }
         }
 
-        public static void UPImport(object sender, EventArgs e)
+        public void timerTick(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Title = "导入UP名单",
-                Filter = "(*.txt)|*.txt",
-                Multiselect = false
-            };
-
-            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            UPnum = 0;
-            if (GetTextFileEncodingType(openFileDialog.FileName) == Encoding.UTF8)
-            {
-
-                StreamReader reader = new StreamReader(openFileDialog.FileName, Encoding.UTF8);
-                // 如果文件编码为UTF8（Windows7以上（不含））则用正常方法打开
-
-                string LineData;
-                while ((LineData = reader.ReadLine()) != null)
-                {
-                    UPList[UPnum++] = LineData;
-                }
-                reader.Close();
-            }
+            if (ticks < standardNum)
+                GetUP(ticks++);
             else
-            {
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                StreamReader reader = new StreamReader(openFileDialog.FileName, Encoding.GetEncoding("GB2312"));
-                // 在较老版本Windows，文本文档默认编码为ANSI（多种编码混合形态，其中中文为GB2312）
-
-                string LineData;
-                while ((LineData = reader.ReadLine()) != null)
-                {
-                    UPList[UPnum++] = LineData;
-                }
-                reader.Close();
-            }
-
-            StreamWriter streamWriter = new StreamWriter("./student.dll"); // 有风险
-            foreach (string data in UPList)
-                streamWriter.WriteLine(data);
-            streamWriter.Close();
+                timer.Enabled = false;
         }
 
-        public void GetUP(object sender, EventArgs e)
+        public void GetUP(int i)
         {
-            for (int i = 1; i <= standardNum; i++)
-            {
+            
                 names[i].Text = StartRandom(true);
                 names[i].Size = names[i - 1].Size;
                 names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y + 35);
-            }
+                names[i].Font = new Font("Microsoft YaHei UI", 20F, FontStyle.Bold, GraphicsUnit.Point);
+                Controls.Add(names[i]);
         }
     }
 }

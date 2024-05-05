@@ -28,27 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-
-            names = new Label[100];
-
+            components = new System.ComponentModel.Container();
+            timer = new System.Windows.Forms.Timer(components);
+            names[0] = new Label();
             SuspendLayout();
+            //
+            // timer
+            //
+            timer.Enabled = true;
+            timer.Interval = 200;
+            timer.Tick += timerTick;
+            timer.Start();
             // 
             // UPWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(217, 450);
+            ClientSize = new Size(220, 450);
             Name = "UPWindow";
             Text = "UPWindow";
+            Load += OnLoad;
             ResumeLayout(false);
-            //
-            // BaseLabel
-            //
-            // names[0].Size = new Size(126, 35);
         }
 
         #endregion
 
         public Label[] names;
+        private System.Windows.Forms.Timer timer;
     }
 }
