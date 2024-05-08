@@ -136,5 +136,10 @@ namespace RandomStudent
             UPWindow window = new UPWindow();
             window.Show();
         }
+
+        private void GetUPList(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,15 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "/p3OvH3Qwbz7CqvTYRAZx86oJOWTxPkaADx6muKyZuHjarsaVqkapF5/lRG677RhXqQ31ZABxSSLISs7xf/BRw==",
+  "dgSpecHash": "Cvklz8aGza/YVEIbQAPRmHJx7BxDk6tam3QNVPXs5/4SONf6ReEpdxC8m1CsTjcDNLlgsveD47qUTXWJ23pS8w==",
   "success": true,
-  "projectFilePath": "D:\\Desktop\\dyt's workspace\\RandomStudent-master\\RandomStudent.csproj",
+  "projectFilePath": "D:\\Desktop\\RandomStudent\\RandomStudent.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.27\\microsoft.windowsdesktop.app.ref.6.0.27.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.27\\microsoft.netcore.app.ref.6.0.27.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.27\\microsoft.aspnetcore.app.ref.6.0.27.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.27\\microsoft.netcore.app.host.win-x64.6.0.27.nupkg.sha512"
+    "C:\\Users\\Administrator\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

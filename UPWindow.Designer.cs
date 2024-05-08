@@ -1,4 +1,6 @@
-﻿namespace RandomStudent
+﻿using System.Xml;
+
+namespace RandomStudent
 {
     partial class UPWindow
     {
@@ -30,7 +32,7 @@
         {
             components = new System.ComponentModel.Container();
             timer = new System.Windows.Forms.Timer(components);
-            names[0] = new Label();
+            names = new Label[100];
             SuspendLayout();
             //
             // timer
@@ -39,6 +41,18 @@
             timer.Interval = 200;
             timer.Tick += timerTick;
             timer.Start();
+            //
+            // names' init
+            //
+            names[0] = new Label();
+            names[0].Font = new Font("Microsoft YaHei UI", 20F, FontStyle.Bold, GraphicsUnit.Point);
+            names[0].Location = new Point(47, 10);
+            names[0].Name = "names[0]";
+            names[0].RightToLeft = RightToLeft.No;
+            names[0].Size = new Size(126, 35);
+            names[0].TabIndex = 0;
+            names[0].Text = " ";
+            names[0].TextAlign = ContentAlignment.MiddleCenter;
             // 
             // UPWindow
             // 

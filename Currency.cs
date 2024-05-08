@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 namespace RandomStudent
 {
 
-    interface Ivalue
-    {
-        
-    }
     class Currency
     {
         public static int line = 0;

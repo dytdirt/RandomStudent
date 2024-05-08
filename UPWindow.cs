@@ -36,8 +36,8 @@ namespace RandomStudent
 
         public void timerTick(object sender, EventArgs e)
         {
-            if (ticks < standardNum)
-                GetUP(ticks++);
+            if (++ticks <= standardNum)
+                GetUP(ticks);
             else
                 timer.Enabled = false;
         }
@@ -49,7 +49,8 @@ namespace RandomStudent
                 names[i].Size = names[i - 1].Size;
                 names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y + 35);
                 names[i].Font = new Font("Microsoft YaHei UI", 20F, FontStyle.Bold, GraphicsUnit.Point);
-                Controls.Add(names[i]);
+                names[i].TextAlign = ContentAlignment.MiddleCenter;
+            Controls.Add(names[i]);
         }
     }
 }

@@ -115,6 +115,7 @@
             UP个数.Name = "UP个数";
             UP个数.Size = new Size(60, 22);
             UP个数.TabIndex = 7;
+            UP个数.Value = 10;
             UP个数.ValueChanged += ValueChanged;
             // 
             // Settings
