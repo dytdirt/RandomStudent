@@ -1,4 +1,5 @@
 using System.Text;
+using static RandomStudent.Currency;
 
 namespace Base64
 {
@@ -6,9 +7,15 @@ namespace Base64
     {
         // char[] Base64List = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".ToCharArray();
         // 原始Base64表
-        private static readonly char[] Base64List = "啊啵呲的额佛哥喝姨几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/{+".ToCharArray();
+        private static char emptyBase64Char = '#';
+        private static char[] Base64List = "啊啵呲的额佛哥喝姨几愙勒摸呢欧破气釰娰特躌鱼无洗一紫锟斤拷坤鸡炒粉qwertyuiopasdfghjklzxcvbnm],/|=".ToCharArray();
         //                                                                                       ^~~~~~~ 都说了炒粉不能加鸡精！
 
+        /// <summary>
+        /// Encode the given string to a base64 string.
+        /// </summary>
+        /// <param name="EncryptString"></param>
+        /// <returns></returns>
         public static string EncryptToBase64(string EncryptString)
         {
             string ResultString = "";
@@ -40,7 +47,7 @@ namespace Base64
                 c3 = (byte)((temp2 >> 2) | temp3);
                 c4 >>= 2;
                 ResultString += Base64List[c1].ToString() + Base64List[c2].ToString() + Base64List[c3].ToString();
-                ResultString += "=";
+                ResultString += emptyBase64Char;
             }
             else if (Input.Length % 3 == 1)
             {
@@ -54,58 +61,43 @@ namespace Base64
                 c3 = (byte)((temp2 >> 2) | temp3);
                 c4 >>= 2;
                 ResultString += Base64List[c1].ToString() + Base64List[c2].ToString();
-                ResultString += "==";
+                ResultString += emptyBase64Char + emptyBase64Char;
             }
 
             return ResultString;
         }
 
-        public static string DecryptToBase64(string EncryptedString)
+        /// <summary>
+        /// Decode the encrypted string to a normal string.
+        /// </summary>
+        /// <param name="EncryptedString"></param>
+        /// <returns></returns>
+        public static string DecryptBase64(string EncryptedString)
         {
             string ResultString = "";
 
             for (int i = 0; i + 3 < EncryptedString.Length; i += 4)
             {
                 char c1 = EncryptedString[i], c2 = EncryptedString[i + 1], c3 = EncryptedString[i + 2], c4 = EncryptedString[i + 3];
+                byte d1 = (byte)SearchIndex(Base64List, c1), d2 = (byte)SearchIndex(Base64List, c2), d3 = (byte)SearchIndex(Base64List, c3), d4 = (byte)SearchIndex(Base64List, c4);
                 byte b1 = 0, b2 = 0, b3 = 0;
 
                 for (byte j = 0; j < 64; j++)
                 {
-                    if (c1 == Base64List[j])
-                    {
-                        b1 = (byte)(j << 2);
-                    }
-                    if (c2 == Base64List[j])
-                    {
-                        b1 |= (byte)(j >> 4);
-                        b2 = (byte)(j << 4);
-                    }
-                    if (c3 == '=')
-                    {
-                        b2 |= (byte)(0 >> 2);
-                        b3 = (byte)((((0 >> 2) << 2) ^ 0) << 6);
-                    }
-                    else if (c3 == Base64List[j])
-                    {
-                        b2 |= (byte)(j >> 2);
-                        b3 = (byte)((((j >> 2) << 2) ^ j) << 6);
-                    }
-                    if (c4 == '=')
-                    {
-                        b3 |= 0;
-                    }
-                    else if (c4 == Base64List[j])
-                    {
-                        b3 |= (byte)j;
-                    }
+                    b1 = (byte)(d1 << 2);
+                    b1 |= (byte)(d2 >> 4);
+                    b2 = (byte)(d2 << 4);
+                    b2 |= (byte)(d3 >> 2);
+                    b3 = (byte)(d3 << 6);
+                    b3 |= d4;
+
                     // special (c3 (or c4) == '=')
                 }
 
-                c1 = (char)b1;
-                c2 = (char)b2;
-                c3 = (char)b3;
+                byte[] bytes = { b1, b2, b3 };
+                string tmp = Encoding.UTF8.GetString(bytes);
 
-                ResultString += c1.ToString() + c2.ToString() + c3.ToString();
+                ResultString += tmp;
             }
 
             return ResultString;

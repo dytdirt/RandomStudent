@@ -1,4 +1,6 @@
-﻿namespace RandomStudent
+﻿using Markdig;
+
+namespace RandomStudent
 {
     partial class Form1
     {
@@ -108,7 +110,17 @@
             测试功能.Size = new Size(59, 13);
             测试功能.TabIndex = 4;
             测试功能.Text = "测试功能";
-            测试功能.Click += 测试功能_Click;
+            测试功能.Click += TestFeature;
+/*
+            string test = "# 测试\r\n\r\n## 测试\r\n\r\n![](.\\test.png)";
+            WebBrowser webBrowser = new WebBrowser()
+            {
+                Dock = DockStyle.Fill,
+                DocumentText = Markdown.ToHtml(test)
+            };
+            Controls.Add(webBrowser);
+*/ // TestFeature: Help doc
+
             // 
             // Form1
             // 

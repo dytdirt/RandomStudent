@@ -1,6 +1,6 @@
 ﻿namespace RandomStudent
 {
-    partial class Settings
+    public partial class Settings
     {
         /// <summary>
         /// Required designer variable.

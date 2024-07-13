@@ -62,7 +62,9 @@ namespace RandomStudent
             Name = "UPWindow";
             Text = "UPWindow";
             Load += OnLoad;
+            TopMost = true;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
