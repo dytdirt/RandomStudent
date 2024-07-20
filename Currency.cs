@@ -19,6 +19,7 @@ namespace RandomStudent
         public static string?[] ListOfStudents = new string[100];
         public static string?[] UPList = new string[100];
         public static int[] Map = new int[100];
+        public static bool IsUP = true;
         public static void release(object sender, EventArgs e)
         {
             Map = new int[100];
@@ -97,13 +98,21 @@ namespace RandomStudent
         /// <returns></returns>
         public static string StringToUnicode(string? source)
         {
-            byte[] bytes = Encoding.Unicode.GetBytes(source);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i += 2)
+            if (source is not null)
             {
-                stringBuilder.AppendFormat("\\u{0}{1}", bytes[i + 1].ToString("x").PadLeft(2, '0'), bytes[i].ToString("x").PadLeft(2, '0'));
+                byte[] bytes = Encoding.Unicode.GetBytes(source);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i += 2)
+                {
+                    stringBuilder.AppendFormat("\\u{0}{1}", bytes[i + 1].ToString("x").PadLeft(2, '0'), bytes[i].ToString("x").PadLeft(2, '0'));
+                }
+                return stringBuilder.ToString();
             }
-            return stringBuilder.ToString();
+            else
+            {
+                return "";
+            }
+
         }
         /// <summary>
         /// Convert the Unicode string back to the normal string.
