@@ -3,65 +3,55 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static RandomStudent.Currency;
 
 namespace RandomStudent
 {
     public partial class UPWindow : Form
     {
-
-        private int line = 0;
-        private string[] UPList = new string[100];
+        public int ticks = 0;
         public UPWindow()
         {
             InitializeComponent();
         }
-
-        public void UPImport(object sender, EventArgs e)
+        [SupportedOSPlatform("windows")]
+        public void OnLoad(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "导入UP名单";
-            openFileDialog.Filter = "(*.txt)|*.txt";
-
-            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            if (Currency.GetTextFileEncodingType(openFileDialog.FileName) == Encoding.UTF8)
+            for (int i = 1; i < 100; i++)
             {
+                names[i] = new Label();
+                names[i].Name = i.ToString();
+                names[i].Text = " ";
+                names[i].Size = names[i - 1].Size;
+                names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y);
 
-                StreamReader reader = new StreamReader(openFileDialog.FileName, Encoding.UTF8);
-                // 如果文件编码为UTF8（Windows7以上（不含））则用正常方法打开
-
-                string LineData;
-                while ((LineData = reader.ReadLine()) != null)
-                {
-                    UPList[line++] = LineData;
-                }
-                reader.Close();
             }
+        }
+        [SupportedOSPlatform("windows")]
+        public void timerTick(object sender, EventArgs e)
+        {
+            if (++ticks <= standardNum)
+                GetUP(ticks);
             else
-            {
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                StreamReader reader = new StreamReader(openFileDialog.FileName, Encoding.GetEncoding("GB2312"));
-                // 在较老版本Windows，文本文档默认编码为ANSI（多种编码混合形态，其中中文为GB2312）
+                timer.Enabled = false;
+        }
+        [SupportedOSPlatform("windows")]
+        public void GetUP(int i)
+        {
 
-                string LineData;
-                while ((LineData = reader.ReadLine()) != null)
-                {
-                    UPList[line++] = LineData;
-                }
-                reader.Close();
-            }
-
-            StreamWriter streamWriter = new StreamWriter("./student.dll");
-            foreach (string data in UPList)
-                streamWriter.WriteLine(data);
-            streamWriter.Close();
-
+            names[i].Text = StartRandom(true);
+            names[i].Size = names[i - 1].Size;
+            names[i].Location = new Point(names[i - 1].Location.X, names[i - 1].Location.Y + 35);
+            names[i].Font = new Font("Microsoft YaHei UI", 20F, FontStyle.Bold, GraphicsUnit.Point);
+            names[i].TextAlign = ContentAlignment.MiddleCenter;
+            Controls.Add(names[i]);
         }
     }
 }

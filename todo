@@ -1,3 +1,5 @@
-# Complete the UPWindow and Settings
+#
 
-promote the random algorithm
+Store the ```UPlist``` and ```standartNum``` to ```student.dll```
+Add a help doc to the main form
+Use Base64 to store images, add images to the help doc
