@@ -130,7 +130,7 @@ namespace RandomStudent
             // 访问仓库
             // 
             访问仓库.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
-            访问仓库.Location = new Point(12, 270);
+            访问仓库.Location = new Point(12, 170);
             访问仓库.Name = "访问仓库";
             访问仓库.Size = new Size(74, 22);
             访问仓库.TabIndex = 8;
@@ -139,7 +139,7 @@ namespace RandomStudent
             // Github
             // 
             Github.Image = Properties.Resources.github;
-            Github.Location = new Point(196, 270);
+            Github.Location = new Point(196, 170);
             Github.Name = "Github";
             Github.Size = new Size(32, 32);
             Github.TabIndex = 10;
@@ -149,7 +149,7 @@ namespace RandomStudent
             // Bilibili
             // 
             Bilibili.Image = Properties.Resources.bilibili;
-            Bilibili.Location = new Point(234, 270);
+            Bilibili.Location = new Point(234, 170);
             Bilibili.Name = "Bilibili";
             Bilibili.Size = new Size(32, 32);
             Bilibili.TabIndex = 11;
@@ -159,7 +159,7 @@ namespace RandomStudent
             // BugRepo
             // 
             BugRepo.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
-            BugRepo.Location = new Point(12, 300);
+            BugRepo.Location = new Point(12, 200);
             BugRepo.Name = "BugRepo";
             BugRepo.Size = new Size(90, 22);
             BugRepo.TabIndex = 12;
@@ -168,7 +168,7 @@ namespace RandomStudent
             // Email
             // 
             Email.Font = new Font("Microsoft YaHei UI", 9F);
-            Email.Location = new Point(92, 300);
+            Email.Location = new Point(92, 200);
             Email.Name = "Email";
             Email.Size = new Size(189, 22);
             Email.TabIndex = 13;
@@ -177,7 +177,7 @@ namespace RandomStudent
             // QQID
             // 
             QQID.Font = new Font("Microsoft YaHei UI", 9F);
-            QQID.Location = new Point(92, 320);
+            QQID.Location = new Point(92, 220);
             QQID.Name = "QQID";
             QQID.Size = new Size(109, 22);
             QQID.TabIndex = 14;
