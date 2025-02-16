@@ -81,8 +81,16 @@ namespace RandomStudent
                     LineData = reader.ReadLine();
                     Map[i++] = Convert.ToInt32(LineData);
                 }
-
+                UPnum = Convert.ToInt32(reader.ReadLine());
+                i = 0;
+                while(i < UPnum)
+                {
+                    LineData = reader.ReadLine();
+                    UPList[i++] = LineData;
+                }
+                //currentIndex = Convert.ToInt32(reader.ReadLine());
                 reader.Close();
+                File.Delete(TempFile);
             }
             else
             {

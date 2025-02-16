@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Net;
 using static Base64.Base64;
 using static RandomStudent.Settings;
 
@@ -16,6 +17,7 @@ namespace RandomStudent
         public static int line = 0;
         public static int UPnum = 0;
         public static int standardNum = 10;
+        public static int currentIndex = 0;
         public static string?[] ListOfStudents = new string[100];
         public static string?[] UPList = new string[100];
         public static int[] Map = new int[100];
@@ -129,6 +131,8 @@ namespace RandomStudent
         {
             for (int i = 0; i < strings.Length; i++)
             {
+                if (strings[i] is null)
+                    continue;
                 if (strings[i].Equals(res))
                     return i;
             }
@@ -144,15 +148,15 @@ namespace RandomStudent
 
         Flag:
             nowLine = random.Next(line);
-            if (isUP && SearchIndex(UPList, ListOfStudents[nowLine]) != -1)
-            {
-                return ListOfStudents[nowLine];
-            }
-            if (random1.Next() % 4 == 3)
+            
+            if (random1.Next() % 4 == 1)
             {
                 if (Map[nowLine] == 0)
                 {
-                    Map[nowLine] += (int)(line * 0.65);
+                    if (isUP && SearchIndex(UPList, ListOfStudents[nowLine]) != -1)
+                        Map[nowLine] += (int)(line * 0.4);
+                    else
+                        Map[nowLine] += (int)(line * 0.65);
 
                     for (int i = 0; i < line; i++)
                     {
@@ -183,10 +187,12 @@ namespace RandomStudent
             {
                 tmpWriter.WriteLine(StringToUnicode(Map[i].ToString()));
             }
+            tmpWriter.WriteLine(StringToUnicode(UPnum.ToString()));
             for (int i = 0; i < UPnum; i++)
             {
                 tmpWriter.WriteLine(StringToUnicode(UPList[i]));
             }
+            tmpWriter.WriteLine(StringToUnicode(currentIndex.ToString()));
             tmpWriter.Close();
 
             StreamReader reader = new StreamReader(@"tmp.dat");
@@ -268,5 +274,16 @@ namespace RandomStudent
             }
             reader.Close();
         }
+
+        //public static void update()
+        //{
+        //    switch (currentIndex)
+        //    {
+        //        case 0:
+        //            WebClient webClient = new WebClient();
+        //            webClient.DownloadFile()
+        //            break;
+        //    }
+        //}
     }
 }
